@@ -1,0 +1,10 @@
+data/*
+experiments/runs/*.tmp
+__pycache__/
+*.pyc
+.DS_Store
+third_party/*
+!third_party/fetch.sh
+!data/download_tokens.py
+!data/download.sh
+__pycache__/

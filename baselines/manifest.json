@@ -1,0 +1,72 @@
+[
+ {
+  "method": "muon",
+  "source": "official",
+  "repo": "https://github.com/KellerJordan/Muon",
+  "commit": "f98f1cacc0263b04290753e32be8d498c1efc806",
+  "license": "MIT",
+  "changes": "vendored file unchanged; the trainer uses the single-device class on the hidden matrices only; embedding, head and 1-D params use the track-3 aux Adam groups (decoupled weight decay .001); model run in fp32 on CPU (track 3 runs it in bf16 on GPU); SingleDeviceMuon, momentum .95, Newton-Schulz 5 steps in bf16 as upstream",
+  "match_check": "passed",
+  "match_detail": "tests/check_official.py: vendored file equals upstream at the commit byte for byte, and 4 optimizer steps on 128x512 and 512x128 matrices give exactly the upstream weights (max difference 0)",
+  "benchmark": "NANOGPT-OPT-laptop: modded-nanogpt optimization-track GPT and data, 4 layers x 128, 200 steps x 1,024 tokens, val loss on 32,768 FineWeb val tokens",
+  "our_score": "val 7.4549 at lr 0.0125 (best of 3 rates: 0.0125 -> 7.4549, 0.025 -> 7.4644, 0.05 -> 7.4895; best is the lowest rate tried, so the sweep does not bracket it)",
+  "published_score": "3250 steps to val 3.28 (track 3 result #36, tuned Muon lr .025 wd .05, n=10)",
+  "published_order_holds": true
+ },
+ {
+  "method": "normuon",
+  "source": "official",
+  "repo": "https://github.com/zichongli5/NorMuon",
+  "commit": "c6989a8354730695d9f5a9faa6c55eeb24865209",
+  "license": "MIT",
+  "changes": "vendored file unchanged; the trainer uses the single-device class on the hidden matrices only; embedding, head and 1-D params use the track-3 aux Adam groups (decoupled weight decay .001); model run in fp32 on CPU (track 3 runs it in bf16 on GPU); SingleDeviceNorMuon, momentum .95, beta2 .95",
+  "match_check": "passed",
+  "match_detail": "tests/check_official.py: vendored file equals upstream at the commit byte for byte, and 4 optimizer steps on 128x512 and 512x128 matrices give exactly the upstream weights (max difference 0)",
+  "benchmark": "NANOGPT-OPT-laptop: modded-nanogpt optimization-track GPT and data, 4 layers x 128, 200 steps x 1,024 tokens, val loss on 32,768 FineWeb val tokens",
+  "our_score": "val 7.4621 at lr 0.0175 (best of 3 rates: 0.0175 -> 7.4621, 0.035 -> 7.4668, 0.07 -> 7.4752; best is the lowest rate tried, so the sweep does not bracket it)",
+  "published_score": "3250 steps to val 3.28 (track 3 result #10, NorMuon lr .035 wd .025, n=20)",
+  "published_order_holds": true
+ },
+ {
+  "method": "moonlight",
+  "source": "official",
+  "repo": "https://github.com/MoonshotAI/Moonlight",
+  "commit": "c2ad5b20c605086526a179d36901bfc41b52b44b",
+  "license": "MIT",
+  "changes": "vendored file unchanged; the trainer uses the single-device class on the hidden matrices only; embedding, head and 1-D params use the track-3 aux Adam groups (decoupled weight decay .001); model run in fp32 on CPU (track 3 runs it in bf16 on GPU); the Muon class of examples/toy_train.py lines 49-240 copied with its two imports, internal Adam parameter list left empty, wd .1, update scale 0.2*sqrt(max(rows, cols))",
+  "match_check": "passed",
+  "match_detail": "tests/check_official.py: vendored file equals upstream at the commit byte for byte, and 4 optimizer steps on 128x512 and 512x128 matrices give exactly the upstream weights (max difference 0)",
+  "benchmark": "NANOGPT-OPT-laptop: modded-nanogpt optimization-track GPT and data, 4 layers x 128, 200 steps x 1,024 tokens, val loss on 32,768 FineWeb val tokens",
+  "our_score": "val 7.4487 at lr 0.002 (best of 3 rates: 0.002 -> 7.4487, 0.004 -> 7.4598, 0.008 -> 7.4996; best is the lowest rate tried, so the sweep does not bracket it)",
+  "published_score": "no track-3 entry; the Moonlight paper (arXiv 2502.16982) reports about 2x compute efficiency over its Adam baseline",
+  "published_order_holds": true
+ },
+ {
+  "method": "soap",
+  "source": "official",
+  "repo": "https://github.com/nikhilvyas/SOAP",
+  "commit": "a1e553530fde97d0e6b307d7c82ac6d38b072340",
+  "license": "MIT",
+  "changes": "vendored file unchanged; the trainer uses the single-device class on the hidden matrices only; embedding, head and 1-D params use the track-3 aux Adam groups (decoupled weight decay .001); model run in fp32 on CPU (track 3 runs it in bf16 on GPU); betas (.95, .95), weight decay .01, precondition_frequency 10 as in the README (track 3 SOAP entries refresh every step and add a hyperball constraint)",
+  "match_check": "passed",
+  "match_detail": "tests/check_official.py: vendored file equals upstream at the commit byte for byte, and 4 optimizer steps on 128x512 and 512x128 matrices give exactly the upstream weights (max difference 0)",
+  "benchmark": "NANOGPT-OPT-laptop: modded-nanogpt optimization-track GPT and data, 4 layers x 128, 200 steps x 1,024 tokens, val loss on 32,768 FineWeb val tokens",
+  "our_score": "val 7.6345 at lr 0.0015 (best of 3 rates: 0.0015 -> 7.6345, 0.003 -> 7.743, 0.006 -> 7.8809; best is the lowest rate tried, so the sweep does not bracket it)",
+  "published_score": "3125 steps to val 3.28 (track 3 result #27, SOAP with a hyperball constraint, frequency 1, n=6); plain SOAP has no track-3 entry",
+  "published_order_holds": false
+ },
+ {
+  "method": "adam",
+  "source": "official",
+  "repo": "https://github.com/pytorch/pytorch (torch.optim.Adam)",
+  "commit": "torch 2.8.0",
+  "license": "BSD-3-Clause",
+  "changes": "reference row: torch.optim.Adam on the hidden matrices, betas (.9, .95), eps 1e-10, no weight decay; aux groups as for every method",
+  "match_check": "passed",
+  "match_detail": "torch built-in optimizer, used as is",
+  "benchmark": "NANOGPT-OPT-laptop: modded-nanogpt optimization-track GPT and data, 4 layers x 128, 200 steps x 1,024 tokens, val loss on 32,768 FineWeb val tokens",
+  "our_score": "val 7.5064 at lr 0.00075 (best of 2 rates: 0.00075 -> 7.5064, 0.0015 -> 7.6566; best is the lowest rate tried, so the sweep does not bracket it)",
+  "published_score": "5625 steps to val 3.28 (track 3 result #2, Adam lr .0015, n=1, marked \"most likely undertuned\")",
+  "published_order_holds": null
+ }
+]
